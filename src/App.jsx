@@ -6,6 +6,7 @@ import Register from './pages/auth/Register';
 import AuthLayout from './Components/AuthLayout';
 import Dashboard from './pages/dashboard';
 
+
 const App = () => {
   return (
     <Routes>
