@@ -1,12 +1,24 @@
-import React from 'react'
-import Products from './Components/Products'
+import React from 'react';
+import { Route, Routes } from 'react-router';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/auth/login';
+import Register from './pages/auth/Register';
+import AuthLayout from './Components/AuthLayout';
+import Dashboard from './pages/dashboard';
 
 const App = () => {
   return (
-    <div>
-      <Products/>
-    </div>
-  )
-}
+    <Routes>
+      <Route path="/" element={<HomePage />} />
 
-export default App
+      {/* Auth Route with nested children */}
+      <Route path="/auth" element={<AuthLayout />}>
+        <Route path="login" element={<LoginPage />} />
+        <Route path="register" element={<Register />} />
+      </Route>
+      <Route path="dashboard" element={<Dashboard />} />
+    </Routes>
+  );
+};
+
+export default App;

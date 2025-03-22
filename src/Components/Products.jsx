@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabase/supabaseClient";
+import { Link } from "react-router";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -20,18 +21,26 @@ const Products = () => {
   };
 
   const handleBuyNow = async (productId) => {
-    const { error } = await supabase.from("orders").insert([
-      {
-        product_id: productId,
-        quantity: 1, // Default quantity to 1 for simplicity
-      },
-    ]);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert("You must be logged in to place an order.");
+        return;
+      }
 
-    if (error) {
-      console.error("Error placing order:", error);
-      alert("Failed to place order. Please try again.");
-    } else {
+      const { error } = await supabase.from("orders").insert([
+        {
+          product_id: productId,
+          quantity: 1,
+          user_id: session.user.id,
+        },
+      ]);
+
+      if (error) throw error;
       alert("Order placed successfully!");
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert(`Failed to place order: ${error.message}`);
     }
   };
 
@@ -42,6 +51,21 @@ const Products = () => {
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-7xl mx-auto px-4">
+
+        {/* Login and Register Buttons */}
+        <div className="flex justify-end space-x-4 mb-6">
+          <Link to="/auth/login">
+            <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-300">
+              Login
+            </button>
+          </Link>
+          <Link to="/auth/register">
+            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+              Register
+            </button>
+          </Link>
+        </div>
+
         <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Products</h1>
 
         {loading && <p className="text-center text-lg text-gray-600">Loading products...</p>}
@@ -56,7 +80,6 @@ const Products = () => {
                 <p className="text-gray-600 mt-2">{product.description}</p>
                 <p className="text-lg font-bold text-blue-600 mt-4">Price: ${product.price}</p>
 
-                {/* Buy Now Button */}
                 <button
                   onClick={() => handleBuyNow(product.id)}
                   className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300"
