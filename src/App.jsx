@@ -7,7 +7,8 @@ import AuthLayout from "./Components/AuthLayout";
 import Dashboard from "./pages/dashboard";
 import NavBar from "./Components/layout/NavBar";
 import PrivateRoute from "./Components/route/PrivateRoute";
-import ProductDetails from "./pages/ProductDeatils";
+import ProductDetails from "./pages/ProductsDetails";
+
 
 const App = () => {
   return (
