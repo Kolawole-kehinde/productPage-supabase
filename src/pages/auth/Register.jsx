@@ -1,57 +1,48 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
-import { z } from "zod";
+import { Link, useNavigate } from "react-router";
 import { supabase } from "../../supabase/supabaseClient";
+import { registerSchema } from "../../Schema/schema";
+import toast from "react-hot-toast";
 ;
 
-// Zod validation schema for the form
-const registerSchema = z
-  .object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Passwords do not match",
-  });
+
+
 
 const Register = () => {
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(registerSchema),
   });
 
   const onSubmit = async (data) => {
+    reset();
     const { name, email, password } = data;
 
-    // Supabase sign-up using email and password
+  
     const { error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
       alert("Registration failed: " + error.message);
       return;
     }
-
-    // Insert name, email, and password into the users table after sign-up
-    const { error: dbError } = await supabase.from("users").insert([
+   const { error: dbError } = await supabase.from("users").insert([
       {
         name: name,
         email: email,
-        password: password, // Note: It's recommended to hash passwords before saving them
+        password: password,
       },
     ]);
 
     if (dbError) {
-      alert("Failed to save user data: " + dbError.message);
+      toast.failed("Failed to save user data: " + dbError.message);
     } else {
-      alert("Registration successful! Please check your email to confirm your account.");
+      toast.success("Registration successful!");
       navigate("/dashboard");
     }
   };
@@ -111,9 +102,10 @@ const Register = () => {
             Register
           </button>
         </form>
+        <p className="pt-4 text-center">Already have an account? <Link to="/login">Login</Link></p>
       </div>
     </div>
   );
 };
-
+ 
 export default Register;

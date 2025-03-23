@@ -1,39 +1,37 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
-import { z } from "zod";
-import { useForm } from "react-hook-form"; // Missing import in your original code
+import { useForm } from "react-hook-form"; 
 import { supabase } from "../../supabase/supabaseClient";
 import { useNavigate } from "react-router";
+import { loginSchema } from "../../Schema/schema";
+import toast from "react-hot-toast";
 
-// Define Zod schema for form validation
-const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting }, // Track form submission state
+    reset,
+    formState: { errors, isSubmitting }, 
   } = useForm({
     resolver: zodResolver(loginSchema),
   });
 
   const onSubmit = async (data) => {
+    reset();
     const { email, password } = data;
-
-    // Sign in user with Supabase
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      alert("Login failed: " + error.message);
+  
+    const { data: { user }, error } = await supabase.auth.signInWithPassword({ email, password });
+  
+    if (user) {
+      toast.success("Login successful!");
+      navigate("/dashboard");
     } else {
-      alert("Login successful!");
-      navigate("/dashboard"); // Redirect to dashboard after login
+      toast.failed("Login failed: " + error.message);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
