@@ -25,7 +25,7 @@ const Dashboard = () => {
         </div> */}
 
         <nav className="mt-10">
-          <Link to="/dashboard/products" className="block py-2 px-4 hover:bg-blue-600">
+          <Link to="/" className="block py-2 px-4 hover:bg-blue-600">
             <FiBox className="inline-block mr-2" />
           Products
           </Link>

@@ -1,37 +1,43 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form"; 
-import { supabase } from "../../supabase/supabaseClient";
-import { useNavigate } from "react-router";
+import { Link, Navigate, useNavigate } from "react-router";
 import { loginSchema } from "../../Schema/schema";
 import toast from "react-hot-toast";
-
+import { UseAuth } from "../../hooks/useAuth";
+import { SignInApi } from "../../services/auth";
 
 const LoginPage = () => {
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const {setUser} = UseAuth();
+  const initialState = {
+    email: "",
+    password: "",
+  };
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting }, 
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(loginSchema),
   });
 
   const onSubmit = async (data) => {
-    reset();
-    const { email, password } = data;
-  
-    const { data: { user }, error } = await supabase.auth.signInWithPassword({ email, password });
-  
-    if (user) {
-      toast.success("Login successful!");
-      navigate("/dashboard");
-    } else {
-      toast.failed("Login failed: " + error.message);
-    }
+    setLoading(true);
+     try {
+       const res = await SignInApi(data);
+       setUser(res);
+       reset();
+       toast.success("User Login Successfully");
+       return Navigate("/dashboard");
+     } catch (error) {
+       toast.error(error?.message)
+       }
+       finally{
+        setLoading(false)
+       }
   };
-  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -61,14 +67,15 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            disabled={isSubmitting} // Disable the button while submitting
+            disabled={loading || isSubmitting}
             className={`w-full py-2 rounded-lg text-white ${
-              isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+              loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
             }`}
           >
-            {isSubmitting ? "Logging in..." : "Login"}
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+        <p className="pt-4 text-center">Don't have an account? <Link className="text-blue-500" to="/auth/register">Register</Link></p>
       </div>
     </div>
   );

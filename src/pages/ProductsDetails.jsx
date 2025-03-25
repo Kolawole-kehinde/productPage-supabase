@@ -1,4 +1,3 @@
-// ProductDetails.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { supabase } from "../supabase/supabaseClient";
@@ -9,15 +8,25 @@ const ProductDetails = () => {
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
-  const [quantity, setQuantity] = useState(1); 
+  const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [buyError, setBuyError] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user);
+    };
+
     const fetchProduct = async () => {
       try {
-        const { data, error } = await supabase.from("products").select("*").eq("id", id).single();
-
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("id", id)
+          .single();
         if (error) throw error;
         setProduct(data);
       } catch (error) {
@@ -28,12 +37,42 @@ const ProductDetails = () => {
       }
     };
 
+    checkUser(); 
     fetchProduct();
   }, [id]);
 
-  // Quantity increment and decrement functions
-  const incrementQuantity = () => setQuantity(prev => prev + 1);
-  const decrementQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1)); // Prevent going below 1
+  const incrementQuantity = () => setQuantity((prev) => prev + 1);
+  const decrementQuantity = () =>
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+
+  const handleBuy = async () => {
+    if (!user) {
+      setBuyError("You must log in before you can buy.");
+      return navigate("/auth/login"); 
+    }
+
+    try {
+      const { data, error } = await supabase.from("orders").insert([
+        {
+          product_id: product.id,
+          quantity,
+          total_price: product.price * quantity,
+          user_id: user.id, // Associate order with the logged-in user
+        },
+      ]);
+
+      if (error) {
+        console.error("Supabase Error:", error.message);
+        throw error;
+      }
+
+      alert("Order placed successfully!");
+      navigate("/orders"); 
+    } catch (error) {
+      console.error("Error placing order:", error);
+      setBuyError("Failed to place the order. Please try again.");
+    }
+  };
 
   if (loading)
     return <div className="text-center mt-4">Loading product details...</div>;
@@ -44,7 +83,7 @@ const ProductDetails = () => {
     <div className="container mx-auto max-w-4xl p-4">
       <button
         onClick={() => navigate(-1)}
-        className="bg-blue-500 flex items-center gap-2 py-1 px-3 text-white mb-4 rounded text-center hover:text-blue-800"
+        className="flex items-center gap-2 text-black mb-4 rounded text-center hover:text-blue-800"
       >
         <FaArrowAltCircleLeft /> Back
       </button>
@@ -62,6 +101,7 @@ const ProductDetails = () => {
             ${product.price}
           </p>
 
+          {/* Quantity controls */}
           <div className="flex items-center mt-4">
             <button
               onClick={decrementQuantity}
@@ -78,9 +118,16 @@ const ProductDetails = () => {
             </button>
           </div>
 
-          <button className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-green-700">
-            Add {quantity} to Cart
+          {/* Buy button */}
+          <button
+            onClick={handleBuy}
+            className="mt-6 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
+          >
+            Buy Now
           </button>
+
+          {/* Display error message if any */}
+          {buyError && <p className="text-red-500 mt-4">{buyError}</p>}
         </div>
       </div>
     </div>

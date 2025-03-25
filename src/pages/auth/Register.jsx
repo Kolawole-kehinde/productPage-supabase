@@ -1,16 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";import { useForm } from "react-hook-form";
+import React, { useState } from "react";import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
-import { supabase } from "../../supabase/supabaseClient";
 import { registerSchema } from "../../Schema/schema";
 import toast from "react-hot-toast";
-;
-
-
+import { signUpApi } from "../../services/auth";
+import { UseAuth } from "../../hooks/useAuth";
 
 
 const Register = () => {
-  const navigate = useNavigate();
+  const { setUser } = UseAuth();
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -20,32 +19,29 @@ const Register = () => {
     resolver: zodResolver(registerSchema),
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = async (data) => {
-    reset();
-    const { name, email, password } = data;
+    const payload = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    };
 
-  
-    const { error } = await supabase.auth.signUp({ email, password });
-
-    if (error) {
-      alert("Registration failed: " + error.message);
-      return;
-    }
-   const { error: dbError } = await supabase.from("users").insert([
-      {
-        name: name,
-        email: email,
-        password: password,
-      },
-    ]);
-
-    if (dbError) {
-      toast.failed("Failed to save user data: " + dbError.message);
-    } else {
-      toast.success("Registration successful!");
+    setLoading(true);
+    try {
+      const res = await signUpApi(payload);
+      console.log(res);
+      setUser(res);
+      reset();
+      toast.success("User Register Successfully");
       navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-  };
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -99,10 +95,10 @@ const Register = () => {
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
           >
-            Register
+            {loading ? "Registering..." : "Register"}
           </button>
         </form>
-        <p className="pt-4 text-center">Already have an account? <Link to="/login">Login</Link></p>
+        <p className="pt-4 text-center">Already have an account? <Link className="text-blue-500" to="/auth/login">Login</Link></p>
       </div>
     </div>
   );
