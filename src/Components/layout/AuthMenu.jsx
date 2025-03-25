@@ -1,20 +1,26 @@
 import React from "react";
-import { Link } from "react-router";
 import { UseAuth } from "../../hooks/useAuth";
+import { Link } from "react-router";
 
-const AuthMenu = () => {
-    const {loading, handleLogout} = UseAuth()
+const AuthMenu = ({ toggleMenu }) => {
+  const { loading, handleLogout } = UseAuth();
+
   return (
-    <menu className="flex space-x-4 text-blue-500">
+    <menu className="flex flex-col lg:flex-row items-start gap-4 text-blue-600 text-lg"> 
       <li>
-        <Link to="/dashboard">Dashboard</Link>
+        <Link onClick={toggleMenu} to="/dashboard">
+          Dashboard
+        </Link>
       </li>
       <li>
-        <button  onClick={() => {
+        <button
+          onClick={() => {
             handleLogout();
-          }}>
-            {loading ? "Loading..." : "Logout"}
-            </button>
+            toggleMenu();
+          }}
+        >
+          {loading ? "Loading..." : "Logout"}
+        </button>
       </li>
     </menu>
   );
