@@ -3,27 +3,15 @@ import { FiMenu, FiX, FiShoppingCart, FiUser, FiBox } from "react-icons/fi";
 import { Link } from "react-router";
 
 const Dashboard = () => {
-  // const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
-  // const toggleSidebar = () => {
-  //   setIsSidebarOpen((prev => !prev));
-  // };
-
+  
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex bg-gray-100">
       {/* Sidebar */}
       <aside
         className={`$ {
           isSidebarOpen ? "w-64" : "w-20"
         } bg-blue-700 text-white transition-all duration-300`}
       >
-        {/* <div className="flex items-center justify-between p-4">
-          <h1 className={`text-xl font-bold ${isSidebarOpen ? "block" : "hidden"}`}>Dashboard</h1>
-          <button  className="text-white focus:outline-none">
-            {isSidebarOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-          </button>
-        </div> */}
-
         <nav className="mt-10">
           <Link to="/" className="block py-2 px-4 hover:bg-blue-600">
             <FiBox className="inline-block mr-2" />
@@ -45,7 +33,7 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="flex-1 p-6 overflow-auto">
         <header className="flex items-center justify-center p-4 shadow-lg mb-6 ">
-          <h2 className="text-xl md:text-2xl font-bold ">Welcome to Your Dashboard</h2>
+          <h2 className="text-xl md:text-2xl font-bold  text-center">Welcome to Your Dashboard</h2>
         </header>
 
         <section>

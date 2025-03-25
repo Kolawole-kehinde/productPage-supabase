@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { supabase } from "../supabase/supabaseClient";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -30,7 +31,7 @@ const ProductDetails = () => {
         if (error) throw error;
         setProduct(data);
       } catch (error) {
-        console.error("Error fetching product:", error);
+        toast.error("Error fetching product:", error);
         setError("Product not found.");
       } finally {
         setLoading(false);
@@ -66,10 +67,10 @@ const ProductDetails = () => {
         throw error;
       }
 
-      alert("Order placed successfully!");
+      toast.success("Order placed successfully!");
       navigate("/orders"); 
     } catch (error) {
-      console.error("Error placing order:", error);
+      toast.error("Error placing order:", error);
       setBuyError("Failed to place the order. Please try again.");
     }
   };
