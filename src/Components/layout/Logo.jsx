@@ -1,14 +1,17 @@
-import React from 'react'
-import { Link } from 'react-router'
+import React from 'react';
+import { NavLink } from 'react-router';
 
-const Logo = ({toggleMenu}) => {
+
+const Logo = ({ toggleMenu }) => {
   return (
     <div>
-          <Link to="/" onClick={toggleMenu} className="text-3xl font-bold text-gray-800">
+      <NavLink to="/" onClick={toggleMenu}>
+        <h2 className="text-3xl font-semibold text-gray-800">
           Store
-        </Link>
+        </h2>
+      </NavLink>
     </div>
-  )
-}
+  );
+};
 
-export default Logo
+export default Logo;
