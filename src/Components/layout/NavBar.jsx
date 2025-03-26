@@ -23,14 +23,14 @@ const NavBar = () => {
 
       {/* Mobile Menu */}
       {open && (
-        <nav className='fixed inset-0 z-40 h-[250px] w-full bg-gray-200 p-5 rounded-b-2xl'>
+        <nav className='fixed inset-0 z-40 h-[200px] w-full bg-gray-200 p-5 rounded-b-2xl'>
           <div className='flex justify-between items-center'>
             <Logo toggleMenu={toggleMenu} /> 
              <button onClick={toggleMenu}>
              <IoMdClose fontSize={30}  />
              </button>
           </div>
-          <Menu menuStyle="w-full flex flex-col gap-4 pt-8" toggleMenu={toggleMenu} /> 
+          <Menu menuStyle="w-full flex flex-col gap-4 py-6" toggleMenu={toggleMenu} /> 
         </nav>
       )}
     </header>

@@ -15,7 +15,7 @@ const CustomInput  = ({
     setShowPassword((prevState) => !prevState);
   };
   return (
-    <div className='space-y-4'>
+    <div className=''>
        {label && <label htmlFor={name}>{label}</label>}
        <div className='relative'>
        <input
