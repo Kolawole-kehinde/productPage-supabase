@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import { FiMenu, FiX, FiShoppingCart, FiUser, FiBox } from "react-icons/fi";
+import { FiShoppingCart, FiUser, FiBox } from "react-icons/fi";
 import { Link } from "react-router";
 
 const Dashboard = () => {
   
   return (
-    <div className="flex bg-gray-100 container mx-auto max-w-7xl min-h-screen">
+    <div className="flex bg-gray-100 container mx-auto max-w-7xl min-h-screen px-4 lg:px-0">
       {/* Sidebar */}
       <aside
         className="bg-blue-700 text-white transition-all duration-300 md:w-64 w-30">
