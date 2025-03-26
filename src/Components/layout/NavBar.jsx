@@ -12,7 +12,7 @@ const NavBar = () => {
 
   return (
     <header className="bg-white relative">
-      <nav className="container mx-auto max-w-7xl flex justify-between items-center py-4 px-4">
+      <nav className="container mx-auto max-w-7xl flex justify-between items-center py-4 px-4 lg:px-0">
         <Logo toggleMenu={toggleMenu} />
 
         <button className='md:hidden' onClick={toggleMenu}> 
@@ -29,7 +29,7 @@ const NavBar = () => {
             <Logo toggleMenu={toggleMenu} /> 
             <IoMdClose fontSize={30} onClick={toggleMenu} />
           </div>
-          <Menu menuStyle="w-full flex flex-col gap-4 pt-8" toggleMenu={toggleMenu} /> 
+          <Menu menuStyle="w-full flex flex-col gap-4 ptnpm-8" toggleMenu={toggleMenu} /> 
         </nav>
       )}
     </header>

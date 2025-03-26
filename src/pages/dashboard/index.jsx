@@ -5,13 +5,10 @@ import { Link } from "react-router";
 const Dashboard = () => {
   
   return (
-    <div className="flex bg-gray-100">
+    <div className="flex bg-gray-100 container mx-auto max-w-7xl min-h-screen">
       {/* Sidebar */}
       <aside
-        className={`$ {
-          isSidebarOpen ? "w-64" : "w-20"
-        } bg-blue-700 text-white transition-all duration-300`}
-      >
+        className="bg-blue-700 text-white transition-all duration-300 md:w-64 w-30">
         <nav className="mt-10">
           <Link to="/" className="block py-2 px-4 hover:bg-blue-600">
             <FiBox className="inline-block mr-2" />
